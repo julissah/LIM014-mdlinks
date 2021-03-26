@@ -1,4 +1,37 @@
 {
-  "name": "md-links",
-  "version": "0.1.0"
+  "name": "package.json",
+  "version": "1.0.0",
+  "description": "Construir una libreria en JS",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "prueba": "node src/index.js",
+    "api": "node src/api.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julissah/LIM014-mdlinks.git"
+  },
+  "keywords": [
+    "javascript",
+    "node",
+    "package"
+  ],
+  "author": "Julissa Huaman <julissa.2606@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/julissah/LIM014-mdlinks/issues"
+  },
+  "homepage": "https://github.com/julissah/LIM014-mdlinks#readme",
+  "dependencies": {
+    "moment": "^2.29.1"
+  },
+  "devDependencies": {
+    "date-fns": "^2.19.0"
+  },
+  "optionalDependencies": {
+    "eslint": "^7.22.0"
+  }
 }
