@@ -1,15 +1,18 @@
-const mdLinks = require('../src/index');
+const {isAbsoluteTest} = require('../src/index');
 const path = require('path');
 
 
 
-describe('mdLinks', () => {
-  const isAbsoluteTest = (test) => {
-    return testUpdate = path.isAbsolute(test) ?path.normalize(test) :path.normalize(path.resolve(test));
-  }
-  test('Deberia validar la ruta', () => {
-    const prueba = './src/pruebas/ejemplo1.md';
-    const prueba2 = 'C:/Users/N14/Documents////GitHub/LIM014-mdlinks/src/pruebas/ejemplo1.md';
-      expect(isAbsoluteTest(prueba)).toEqual(prueba2);
+describe('Validación de ruta absoluta', () => {
+  test('Si la ruta es absoluta, pero contiene especificadores relativos como // barras dobles o .. puntos, calculara la ruta real ', () => {
+      const test = 'C:/Users/N14/Documents//////GitHub/LIM014-mdlinks/src///////pruebas/ejemplo1.md';
+      const test2 = 'C:\\Users\\N14\\Documents\\GitHub\\LIM014-mdlinks\\src\\pruebas\\ejemplo1.md';
+      expect(isAbsoluteTest(test)).toEqual(test2);
+  });
+
+  test('Si la ruta es relativa la convierte en absoluta ', () => {
+      const test = './src/pruebas/ejemplo1.md';
+      const test2 = 'C:\\Users\\N14\\Documents\\GitHub\\LIM014-mdlinks\\src\\pruebas\\ejemplo1.md';
+      expect(isAbsoluteTest(test)).toEqual(test2);
   });
 });

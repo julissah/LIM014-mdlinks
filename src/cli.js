@@ -1,32 +1,42 @@
-const mdlinks = require('./index')
-
-const fetch = require('node-fetch');
+const {mdlinks} = require('./index')
+const {stats} = require('./option')
+const fs = require('fs');
 // const test = '/src/pruebas/ejemplo1.txt'
 // const test = 'C:/Users/N14/Documents/GitHub/LIM014-mdlinks/src/pruebas/ejemplo1.md'
 // const test = './src/pruebas/ejemplo3.md'
 // const test = './src/pruebas'
 // const test = './src/pruebas2'
-
+console.log(process.argv.slice(2))
 var myArgs = process.argv.slice(2);
-console.log(myArgs)
+
 if (myArgs.length === 1){
+  if (fs.statSync(myArgs[0]).isFile()){
     mdlinks(myArgs[0], { validate: false })
-    .then(data => data)
+    .then(data => console.table(data))
     .catch(err => console.error(err));
+  } else {
+    mdlinks(myArgs[0], { validate: false })
+    .then(data => {
+      data.forEach(element => {
+        console.table(element)
+      });
+    })
+    .catch(err => console.error(err));
+  }
 }
 if (myArgs.length === 2){
     switch (myArgs[1]) {
-        case "--validate":
-            console.log(myArgs[1]);
-            mdlinks(myArgs[0], { validate: true })
-            // .then(data => console.log('Ingresaste validate'))
-            .then(data => data)
-            .catch(err => console.error(err));
-            // .then(data => console.log('Ingresaste validate'))
-            // .reject(err = console.log('error'))
+        case '--validate':
+              mdlinks(myArgs[0], { validate: true })
+              .then(data => data)
             break;
         case '--stats':
-            console.log(myArgs[1]);
+          stats(myArgs[0], { validate: true })
+            // mdlinks(argumento[0], { validate: true }).then(resp => console.log(colors.bgMagenta(totalUnique(resp))))
+            // .then(data => {
+
+            // })
+            // .catch(err => console.error(err))
             break;
         default:
             console.log('Lo siento, no es un comando valido.');
@@ -38,97 +48,7 @@ if (myArgs.length === 3){
     }
 }
 
-let link =[
 
-  {
-    href: 'https://nodejs.dev/learn/working-with-folders-in-nodejs',
-    text: 'nodejs',
-    file: 'C:\\Users\\N14\\Documents\\GitHub\\LIM014-mdlinks\\src\\pruebas\\ejemplo1.md'
-  },
-  {
-    href: 'https://www.npmjs.com/package/marked',
-    text: 'marked',
-    file: 'C:\\Users\\N14\\Documents\\GitHub\\LIM014-mdlinks\\src\\pruebas\\ejemplo1.md'
-  },
-  {
-    href: 'https://google.com4',
-    text: 'google',
-    file: 'C:\\Users\\N14\\Documents\\GitHub\\LIM014-mdlinks\\src\\pruebas\\ejemplo1.md'
-  }
-
-  ]
-
-const linksStatus = (arrayLinks) => {
-
-  const validateLinkStatus = arrayLinks.map((element) =>
-    fetch(element)
-      .then((response) => {
-        if((response.status >= 200) && (response.status <= 399)){
-          const obj = {
-            ...arrayLinks,
-            href: element.href,
-            text: (element.text.substring(0, 50)),
-            path: element.file,
-            status: response.status,
-            statusText: 'OK'
-          }
-          return obj
-        }
-        else if((response.status < 200 )|| (response.status >=400)){
-          return {
-            href: element.href,
-            text: (element.text.substr(0, 50)),
-            path: element.file,
-            status: res.status,
-            statusText: 'fail'
-          }
-        }
-      })
-      .catch((response) => {
-        console.log('false' + response.status)
-        return {
-        href: element.href,
-        text: (element.text),
-        path: element.file,
-        status:404,
-        statusText: 'fail'
-      }
-      })
-  );
-      // console.log(validateLinkStatus)
-  return Promise.all(validateLinkStatus)
-    .then(response => {
-    console.log('Array de resultados', response);
-    })
-    .catch(err => {
-    console.error(err);
-})
-
-}
-
-
-// const pruebasOk = () => {
-
-//       const okiiiii= linksStatus(link)
-//       console.log(okiiiii)
-
-
-// }
-
-// pruebasOk()
-// .then(data => console.log(data))
-// .catch(response => response)
-
-// const linksStatus = (arrayLinks) => {
-//   fetch(arrayLinks.href).then((res) => {
-//     const mystatus = res.status;
-//     const mymessage = res.statusText;
-//     const newObj = {
-//       ...arr,
-//       status: mystatus,
-//       message: mymessage,
-//     };
-//     return newObj;
-//   })
-
-// }
+// const isDirectory = fs.lstatSync('./src/pruebas/ejemplo1.md').isDirectory()
+// console.log(directory)
+// fs.lstatSync(path_string).isDirectory()
