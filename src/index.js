@@ -2,12 +2,15 @@ const path = require('path');
 const fs = require('fs');
 const marked = require('marked');
 const fetch = require('node-fetch');
+const { resolve } = require('path');
 
 //Función que verifica si existe la ruta
 const existsRoute = (test) => (fs.existsSync(test));
+const isFile = (test => fs.statSync(test).isFile());
 
 const isDirectory = (test) => (fs.lstatSync(test).isDirectory());
 
+const isMd = (test) => (path.extname(test));
 //Función que lee un archivo
 const readFilePath = (test) => fs.readFileSync(test).toString();
 
@@ -19,19 +22,35 @@ const isAbsoluteTest = (test) => {
 
 // Función que recorre los archivos que contiene un directorio
 const ArrayFileNameDirectories = (test) => {
-
   const nameFileDirectories = fs.readdirSync(test).map(element =>
-    path.join(isAbsoluteTest(test), element));
-
-    // console.log(nameFileDirectories.flat())
-    // console.log(nameFileDirectories)
-
+    path.join(test, element)
+    )
   return nameFileDirectories;
+};
+
+
+const searchRoutemd = (test) => {
+  let arrayMdFilesDirec = [];
+  const filePath = isAbsoluteTest(test);
+  if (isFile(test)) {
+    if (isMd(test) === '.md') {
+      arrayMdFilesDirec.push(test);
+    }
+  } else {
+    ArrayFileNameDirectories(test).forEach((element) => {
+      const filesOfNewRoute = element;
+      const getMDFilesInNewRoute = searchRoutemd(filesOfNewRoute);
+      arrayMdFilesDirec = arrayMdFilesDirec.concat(getMDFilesInNewRoute);
+    });
+  }
+  return arrayMdFilesDirec;
 };
 
 //Función de validacion de archivos (extension .md)
 const validateIsFileMd = (test,value) => {
   let basename = path.basename(test)
+  let dirname = path.dirname(test)
+  let pathName = path.join('.',dirname,basename)
   let arrayMdFiles = [];
   let arrayLinksMd = '';
   if(path.extname(isAbsoluteTest(test)) === '.md'){
@@ -39,12 +58,12 @@ const validateIsFileMd = (test,value) => {
       arrayMdFiles.push(isAbsoluteTest(test));
       if(value === false){
         (extraerLinks(arrayMdFiles).length > 0)
-        ? arrayLinksMd = extraerLinks(arrayMdFiles)
-        : console.log('El archivo ' + basename + ' no contiene links')
+        ? arrayLinksMd = extraerLinks(arrayMdFiles,pathName)
+        : console.log('El archivo ' + pathName + ' no contiene links')
       } else if (value === true) {
         (extraerLinks(arrayMdFiles).length > 0)
-        ? arrayLinksMd = linkValidate(extraerLinks(arrayMdFiles))
-        : console.log('El archivo ' + basename + ' no contiene links')
+        ? arrayLinksMd = linkValidate(extraerLinks(arrayMdFiles,pathName))
+        : console.log('El archivo ' + pathName + ' no contiene links')
       }
     } else {
       reject('El archivo esta vacio');
@@ -56,7 +75,7 @@ const validateIsFileMd = (test,value) => {
 }
 
 // Funcion de extraer links
-const extraerLinks = (arrayMdFiles) => {
+const extraerLinks = (arrayMdFiles, pathName) => {
     let arrayLinks = [];
     const renderer = new marked.Renderer();
     arrayMdFiles.forEach( file => {
@@ -64,7 +83,7 @@ const extraerLinks = (arrayMdFiles) => {
         const linkProperties = {
           href,
           text,
-          file
+          pathName
         };
         arrayLinks.push(linkProperties);
       };
@@ -79,6 +98,7 @@ const linkValidate = (arrayLinks) => {
   arrayLinks.map(item => {
     arrayLinkProperties.push(item)
   })
+
   arrayLinks2.push(linksStatus(arrayLinkProperties))
   return arrayLinks2
 }
@@ -91,7 +111,7 @@ const linksStatus = (arrayLinks) => {
          return {
             href: element.href,
             text: (element.text.substr(0, 50)),
-            path: element.file,
+            pathName: element.pathName,
             status: response.status,
             statusText: 'Ok'
           }
@@ -100,7 +120,7 @@ const linksStatus = (arrayLinks) => {
           return {
             href: element.href,
             text: (element.text.substr(0, 50)),
-            path: element.file,
+            pathName: element.pathName,
             status: res.status,
             statusText: 'fail'
           }
@@ -110,7 +130,7 @@ const linksStatus = (arrayLinks) => {
         return {
         href: element.href,
         text: (element.text),
-        path: element.file,
+        pathName: element.pathName,
         status: 404,
         statusText: 'fail'
         }
@@ -138,58 +158,28 @@ const unique = (statusTable) => {
 
 //Funcion principal mdlinks
 const mdlinks = (test, options={} ) => {
-  let arrayfileDirectory = '';
+  let arrayfileDirectory = [];
   let resultado = []
   return new Promise((resolve, reject) => {
     let value = options.validate
     if (!existsRoute(test)) {
       reject("Ruta inválida")
     }
-    if (fs.statSync(isAbsoluteTest(test)).isFile()) {
-          const testAbsolute = isAbsoluteTest(test);
-          resolve(resultado = validateIsFileMd(testAbsolute,value))
+    if (isFile(test)) {
+          resolve(resultado = validateIsFileMd(test,value))
     } else {
-      let arrayFileNmeMd = []
-      let arrayFileDirecNmeMd = []
-      let allfile = []
-      const arrayFileMd = ArrayFileNameDirectories(test).map( item => {
-        if (path.extname(item) === '.md') {
-          arrayFileNmeMd.push(item)
-
-        } else if (isDirectory(item) === true){
-          mdlinks(item, value )
-          arrayFileDirecNmeMd.push(item)
-        }
-
-
-        return arrayFileNmeMd.concat(arrayFileDirecNmeMd)
-      })
-
-      console.log('1' + arrayFileMd)
-      // console.log('2' +arrayFileDirecNmeMd)
-      // console.log('3' + arrayFileNmeMd.concat(arrayFileDirecNmeMd))
-       allFiles = arrayFileMd.flat()
-
-      // console.log(allFiles)
-      if (arrayFileNmeMd.length === 0) {
+      if (searchRoutemd(test).length === 0) {
         reject('El directorio no contiene archivos');
       } else {
-        console.log(arrayFileNmeMd)
-        resolve (arrayFileNmeMd.map(data => {
-
-          if (path.extname(data) === '.md') {
-            if (options.validate === true) {
-              validateIsFileMd(data,value)
-            } else {
-              arrayfileDirectory = validateIsFileMd(data,value)
-              return arrayfileDirectory
-            }
-          } else if (isDirectory(data) === true){
-            // mdlinks(item, value )
-            // arrayFileDirecNmeMd.push(item)
-            // console.log(data)
+          const allRoute = searchRoutemd(test).map(data => {
+          if (options.validate === true) {
+            validateIsFileMd(data,value)
+          } else {
+            arrayfileDirectory = validateIsFileMd(data,value)
+            return arrayfileDirectory
           }
-        }));
+        })
+        resolve (allRoute)
       }
     }
   });

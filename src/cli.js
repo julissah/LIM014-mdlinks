@@ -6,7 +6,6 @@ const fs = require('fs');
 // const test = './src/pruebas/ejemplo3.md'
 // const test = './src/pruebas'
 // const test = './src/pruebas2'
-console.log(process.argv.slice(2))
 var myArgs = process.argv.slice(2);
 
 if (myArgs.length === 1){
@@ -49,6 +48,3 @@ if (myArgs.length === 3){
 }
 
 
-// const isDirectory = fs.lstatSync('./src/pruebas/ejemplo1.md').isDirectory()
-// console.log(directory)
-// fs.lstatSync(path_string).isDirectory()
