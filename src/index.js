@@ -2,15 +2,18 @@ const path = require('path');
 const fs = require('fs');
 const marked = require('marked');
 const fetch = require('node-fetch');
-const { resolve } = require('path');
 
 //Función que verifica si existe la ruta
 const existsRoute = (test) => (fs.existsSync(test));
+
+//Función que verifica si es un file/archivo
 const isFile = (test => fs.statSync(test).isFile());
 
 const isDirectory = (test) => (fs.lstatSync(test).isDirectory());
 
+//Función que verifica si es un file/archivo con extensión .md
 const isMd = (test) => (path.extname(test));
+
 //Función que lee un archivo
 const readFilePath = (test) => fs.readFileSync(test).toString();
 
@@ -20,7 +23,7 @@ const isAbsoluteTest = (test) => {
   return testUpdate;
 }
 
-// Función que recorre los archivos que contiene un directorio
+// Función que lee los archivos que contiene un directorio
 const ArrayFileNameDirectories = (test) => {
   const nameFileDirectories = fs.readdirSync(test).map(element =>
     path.join(test, element)
@@ -28,18 +31,16 @@ const ArrayFileNameDirectories = (test) => {
   return nameFileDirectories;
 };
 
-
+// Función que recorre los archivos .md y si es un directorio realiza recursividad
 const searchRoutemd = (test) => {
   let arrayMdFilesDirec = [];
-  const filePath = isAbsoluteTest(test);
   if (isFile(test)) {
     if (isMd(test) === '.md') {
       arrayMdFilesDirec.push(test);
     }
-  } else {
+  } else if (isDirectory(test)){
     ArrayFileNameDirectories(test).forEach((element) => {
-      const filesOfNewRoute = element;
-      const getMDFilesInNewRoute = searchRoutemd(filesOfNewRoute);
+      const getMDFilesInNewRoute = searchRoutemd(element);
       arrayMdFilesDirec = arrayMdFilesDirec.concat(getMDFilesInNewRoute);
     });
   }
@@ -93,14 +94,15 @@ const extraerLinks = (arrayMdFiles, pathName) => {
 };
 
 const linkValidate = (arrayLinks) => {
-  let arrayLinks2 = []
   let arrayLinkProperties = [];
   arrayLinks.map(item => {
     arrayLinkProperties.push(item)
   })
-
-  arrayLinks2.push(linksStatus(arrayLinkProperties))
-  return arrayLinks2
+  return(
+  linksStatus(arrayLinkProperties)
+  .then(data =>  console.table(data))
+  .catch(err => console.error('el error es:' + err))
+  )
 }
 
 const linksStatus = (arrayLinks) => {
@@ -137,23 +139,34 @@ const linksStatus = (arrayLinks) => {
       })
   );
 
-    Promise.all(validateLinkStatus)
+   return Promise.all(validateLinkStatus)
     // .then(response => console.table(response))
-    .then(response => console.table(response))
-    // .then(response => response)
-    .catch(err => console.error('el error es:' + err))
+    // .then(response => console.table(response))
+    // // .then(response => response)
+    // .catch(err => console.error('el error es:' + err))
 
 }
 
-const unique = (statusTable) => {
-  // const st = statusTable.map(data => data)
-  // console.log(st)
-  for (let i = 0; i < 5; i++) {
-    const element = statusTable[i];
-    console.log(element)
+const totalUnique = (stat) => {
+  const total = stat.length
+  const arrayHref = stat.map(data => data.href)
+  const uniqueHref = (new Set(arrayHref)).size
+  const stats = `Total: ${total} \nUnique: ${uniqueHref}`
+  return stats
+}
 
-  }
-  // console.log(statusTable[1].status)
+const totalBroken = (stat) => {
+  let arrayStatus = []
+  linksStatus(stat)
+  .then(data => {
+    for (let i = 0; i < data.length; i++) {
+      const element = data[i].status;
+      arrayStatus.push(element)
+    }
+    const statusBroken = (arrayStatus.filter(data => data >= 404)).length
+    const broken = `Broken: ${statusBroken}`
+    return console.log(broken)
+  })
 }
 
 //Funcion principal mdlinks
@@ -162,16 +175,24 @@ const mdlinks = (test, options={} ) => {
   let resultado = []
   return new Promise((resolve, reject) => {
     let value = options.validate
+    let valueStats = options.stats
+    let valuestatsValidate = options.statsValidate
     if (!existsRoute(test)) {
       reject("Ruta inválida")
     }
     if (isFile(test)) {
-          resolve(resultado = validateIsFileMd(test,value))
+      resolve(resultado = validateIsFileMd(test,value))
+      if(valueStats === false) {
+        resolve(console.log(totalUnique(validateIsFileMd(test,valueStats))))
+      } else if (valuestatsValidate === false) {
+        resolve(totalBroken(validateIsFileMd(test,valuestatsValidate)))
+      }
     } else {
       if (searchRoutemd(test).length === 0) {
         reject('El directorio no contiene archivos');
       } else {
           const allRoute = searchRoutemd(test).map(data => {
+            console.log(data)
           if (options.validate === true) {
             validateIsFileMd(data,value)
           } else {
@@ -184,6 +205,6 @@ const mdlinks = (test, options={} ) => {
     }
   });
 }
-module.exports = {mdlinks,isAbsoluteTest}
+module.exports = {mdlinks,isFile}
 
 
