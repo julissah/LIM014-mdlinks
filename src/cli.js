@@ -25,12 +25,12 @@ if (myArgs.length === 1){
 if (myArgs.length === 2){
     switch (myArgs[1]) {
         case '--validate':
-              mdlinks(myArgs[0], { validate: true })
-              .then(data => data)
+          mdlinks(myArgs[0], { validate: true })
+            .then(data => data)
             break;
         case '--stats':
           mdlinks(myArgs[0], { stats: false })
-            .then(data => data)
+            .then(data => console.table(data))
             break;
         default:
             console.log('Lo siento, no es un comando válido.');
@@ -39,7 +39,9 @@ if (myArgs.length === 2){
 if (myArgs.length === 3){
     if(myArgs[1] === '--stats' && myArgs[2] === '--validate' || myArgs[1] === '--validate' && myArgs[2] === '--stats'){
         mdlinks(myArgs[0], { stats: false})
+        .then(data => data)
         mdlinks(myArgs[0], { statsValidate: false})
+        .then(data => data)
     }
 }
 

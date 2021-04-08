@@ -149,10 +149,15 @@ const linksStatus = (arrayLinks) => {
 
 const totalUnique = (stat) => {
   const total = stat.length
+  const PathName = path.basename(stat[0].pathName)
   const arrayHref = stat.map(data => data.href)
   const uniqueHref = (new Set(arrayHref)).size
-  const stats = `Total: ${total} \nUnique: ${uniqueHref}`
-  return stats
+  const objTotalUnique = {
+    file: PathName,
+    total: total,
+    unique: uniqueHref
+  }
+  return objTotalUnique
 }
 
 const totalBroken = (stat) => {
@@ -165,9 +170,17 @@ const totalBroken = (stat) => {
     }
     const statusBroken = (arrayStatus.filter(data => data >= 404)).length
     const broken = `Broken: ${statusBroken}`
+    // const objTotalBroken = {
+    //   ...unique,
+    //   broken: broken
+    // }
+    // console.log(objTotalBroken)
+    // return console.table(objTotalBroken)
     return console.log(broken)
   })
+  .catch(err => console.error(err))
 }
+
 
 //Funcion principal mdlinks
 const mdlinks = (test, options={} ) => {
@@ -183,8 +196,10 @@ const mdlinks = (test, options={} ) => {
     if (isFile(test)) {
       resolve(resultado = validateIsFileMd(test,value))
       if(valueStats === false) {
-        resolve(console.log(totalUnique(validateIsFileMd(test,valueStats))))
+        const objResultStats = totalUnique(validateIsFileMd(test,valueStats))
+        resolve(console.log(`Total: ${objResultStats.total} \nUnique: ${objResultStats.unique}`))
       } else if (valuestatsValidate === false) {
+
         resolve(totalBroken(validateIsFileMd(test,valuestatsValidate)))
       }
     } else {
@@ -192,10 +207,15 @@ const mdlinks = (test, options={} ) => {
         reject('El directorio no contiene archivos');
       } else {
           const allRoute = searchRoutemd(test).map(data => {
-            console.log(data)
-          if (options.validate === true) {
-            validateIsFileMd(data,value)
-          } else {
+          if (value === true) {
+            return validateIsFileMd(data,value)
+          } else if (valueStats === false) {
+             return totalUnique(validateIsFileMd(data,valueStats))
+          } else if (valuestatsValidate === false) {
+            return totalBroken(validateIsFileMd(data,valuestatsValidate))
+          }
+
+          else {
             arrayfileDirectory = validateIsFileMd(data,value)
             return arrayfileDirectory
           }
