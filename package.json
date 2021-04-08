@@ -13,7 +13,8 @@
     "prueba": "node src/index.js",
     "cli": "node src/cli.js",
     "start": "serve src/",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
