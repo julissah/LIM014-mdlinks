@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable max-statements */
 const path = require('path');
 const fs = require('fs');
 const marked = require('marked');
@@ -26,8 +28,7 @@ const isAbsoluteTest = (test) => {
 // Función que lee los archivos que contiene un directorio
 const ArrayFileNameDirectories = (test) => {
   const nameFileDirectories = fs.readdirSync(test).map(element =>
-    path.join(test, element)
-    )
+    path.join(test, element))
   return nameFileDirectories;
 };
 
@@ -64,15 +65,19 @@ const validateIsFileMd = (test, value) => {
       arrayMdFiles.push(isAbsoluteTest(test));
       if(value === false){
         (extraerLinks(arrayMdFiles).length > 0)
-        ? arrayLinksMd = extraerLinks(arrayMdFiles,pathName)
-        : console.log('El archivo ' + pathName + ' no contiene links')
+        ? arrayLinksMd = extraerLinks(arrayMdFiles, pathName)
+        : console.log(`El archivo ${pathName} no contiene links`)
       } else if (value === true) {
         (extraerLinks(arrayMdFiles).length > 0)
-        ? arrayLinksMd = linkValidate(extraerLinks(arrayMdFiles,pathName))
-        : console.log('El archivo ' + pathName + ' no contiene links')
+        ? arrayLinksMd = linkValidate(extraerLinks(arrayMdFiles, pathName))
+        : console.log(`El archivo ${pathName} no contiene links`)
       }
-    } else {reject('El archivo esta vacio');}
-  } else {reject ('no es ext .md');}
+    } else {
+      console.log('El archivo esta vacio');
+    }
+  } else {
+    console.log('no es ext .md');
+  }
   return arrayLinksMd
 }
 // Funcion de extraer links
@@ -88,6 +93,7 @@ const extraerLinks = (arrayMdFiles, pathName) => {
         };
         arrayLinks.push(linkProperties);
       };
+      console.log(readFilePath(file))
       marked(readFilePath(file), { renderer });
     });
     return arrayLinks;
@@ -110,15 +116,14 @@ const linksStatus = (arrayLinks) => {
     fetch(element)
       .then(response => {
         if((response.status >= 200) && (response.status <= 399)){
-         return {
+          return {
             "href": element.href,
             "text": (element.text.substr(0, 50)),
             "pathName": element.pathName,
             "status": response.status,
             "statusText": 'Ok'
           }
-        }
-        else if((response.status < 200 )|| (response.status >=400)){
+        } else if ((response.status < 200 )|| (response.status >=400)){
           return {
             "href": element.href,
             "text": (element.text.substr(0, 50)),
@@ -136,8 +141,7 @@ const linksStatus = (arrayLinks) => {
         "status": 404,
         "statusText": 'fail'
         }
-      })
-  );
+      }));
    return Promise.all(validateLinkStatus)
 }
 
@@ -206,13 +210,13 @@ const mdlinks = (test, options={} ) => {
       reject("Ruta inválida")
     }
     if (isFile(test)) {
-      resolve(validateIsFileMd(test,value))
+      resolve(validateIsFileMd(test, value))
       if(valueStats === false) {
-        const objResultStats = totalUnique(validateIsFileMd(test,valueStats))
+        const objResultStats = totalUnique(validateIsFileMd(test, valueStats))
         resolve(console.log(`Total: ${objResultStats.total} \nUnique: ${objResultStats.unique}`))
       } else if (valuestatsValidate === false) {
-        const objResultStats = totalUnique(validateIsFileMd(test,valuestatsValidate))
-        const statsVal = totalBroken(objResultStats, validateIsFileMd(test,valuestatsValidate))
+        const objResultStats = totalUnique(validateIsFileMd(test, valuestatsValidate))
+        const statsVal = totalBroken(objResultStats, validateIsFileMd(test, valuestatsValidate))
         resolve(statsVal)
       }
     } else {
@@ -221,18 +225,16 @@ const mdlinks = (test, options={} ) => {
       } else {
           const allRoute = searchRoutemd(test).map(data => {
           if (value === true) {
-            return validateIsFileMd(data,value)
+            return validateIsFileMd(data, value)
           } else if (valueStats === false) {
-             return totalUnique(validateIsFileMd(data,valueStats))
+             return totalUnique(validateIsFileMd(data, valueStats))
           } else if (valuestatsValidate === false) {
-            const objUnique = totalUnique(validateIsFileMd(data,valuestatsValidate))
-            const objBroken = totalBrokenDirectory(objUnique, validateIsFileMd(data,valuestatsValidate))
+            const objUnique = totalUnique(validateIsFileMd(data, valuestatsValidate))
+            const objBroken = totalBrokenDirectory(objUnique, validateIsFileMd(data, valuestatsValidate))
             return objBroken
           }
-          else {
-            arrayfileDirectory = validateIsFileMd(data,value)
+            arrayfileDirectory = validateIsFileMd(data, value)
             return arrayfileDirectory
-          }
         })
         resolve (allRoute)
       }
@@ -242,6 +244,10 @@ const mdlinks = (test, options={} ) => {
 module.exports = {
   existsRoute,
   isFile,
-  mdlinks,
-  isAbsoluteTest
+  isDirectory,
+  isMd,
+  readFilePath,
+  isAbsoluteTest,
+  ArrayFileNameDirectories,
+  mdlinks
 }

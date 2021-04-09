@@ -33,16 +33,15 @@ if (myArgs.length === 2){
 if (myArgs.length === 3){
     if((myArgs[1] === '--stats' && myArgs[2] === '--validate') || (myArgs[1] === '--validate' && myArgs[2] === '--stats')){
       if (isFile(myArgs[0])) {
-        mdlinks(myArgs[0], { "stats": false})
+        mdlinks(myArgs[0], { "stats": false })
         .then(data => data)
-        mdlinks(myArgs[0], { "statsValidate": false})
+        mdlinks(myArgs[0], { "statsValidate": false })
         .then(data => data)
       } else {
-        mdlinks(myArgs[0], { "statsValidate": false})
+        mdlinks(myArgs[0], { "statsValidate": false })
         .then(data => data)
       }
     } else {
       console.log('Lo siento, no es un comando válido.')
     }
 }
-
