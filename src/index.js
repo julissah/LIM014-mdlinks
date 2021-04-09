@@ -100,51 +100,45 @@ const linkValidate = (arrayLinks) => {
   })
   return(
   linksStatus(arrayLinkProperties)
-  .then(data =>  console.table(data))
-  .catch(err => console.error('el error es:' + err))
+  .then(data => console.table(data))
+  .catch(err => console.error(`Error: ${err}`))
   )
 }
 
 const linksStatus = (arrayLinks) => {
   const validateLinkStatus = arrayLinks.map((element) =>
     fetch(element)
-      .then((response) => {
+      .then(response => {
         if((response.status >= 200) && (response.status <= 399)){
          return {
-            href: element.href,
-            text: (element.text.substr(0, 50)),
-            pathName: element.pathName,
-            status: response.status,
-            statusText: 'Ok'
+            "href": element.href,
+            "text": (element.text.substr(0, 50)),
+            "pathName": element.pathName,
+            "status": response.status,
+            "statusText": 'Ok'
           }
         }
         else if((response.status < 200 )|| (response.status >=400)){
           return {
-            href: element.href,
-            text: (element.text.substr(0, 50)),
-            pathName: element.pathName,
-            status: res.status,
-            statusText: 'fail'
+            "href": element.href,
+            "text": (element.text.substr(0, 50)),
+            "pathName": element.pathName,
+            "status": response.status,
+            "statusText": 'fail'
           }
         }
       })
       .catch(() => {
         return {
-        href: element.href,
-        text: (element.text),
-        pathName: element.pathName,
-        status: 404,
-        statusText: 'fail'
+        "href": element.href,
+        "text": (element.text),
+        "pathName": element.pathName,
+        "status": 404,
+        "statusText": 'fail'
         }
       })
   );
-
    return Promise.all(validateLinkStatus)
-    // .then(response => console.table(response))
-    // .then(response => console.table(response))
-    // // .then(response => response)
-    // .catch(err => console.error('el error es:' + err))
-
 }
 
 const totalUnique = (stat) => {
