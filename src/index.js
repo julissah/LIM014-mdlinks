@@ -249,5 +249,6 @@ module.exports = {
   readFilePath,
   isAbsoluteTest,
   ArrayFileNameDirectories,
+  searchRoutemd,
   mdlinks
 }
