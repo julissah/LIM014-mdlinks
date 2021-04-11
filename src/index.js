@@ -105,8 +105,6 @@ const linkValidate = (arrayLinks) => {
   })
   return(
   linksStatus(arrayLinkProperties)
-  .then(data => console.table(data))
-  .catch(err => console.error(`Error: ${err}`))
   )
 }
 
@@ -141,61 +139,7 @@ const linksStatus = (arrayLinks) => {
         "statusText": 'fail'
         }
       }));
-   return Promise.all(validateLinkStatus)
-}
-
-const totalUnique = (stat) => {
-  const totalUnique = stat.length
-  const PathName = path.basename(stat[0].pathName)
-  const arrayHref = stat.map(data => data.href)
-  const uniqueHref = (new Set(arrayHref)).size
-  const objTotalUnique = {
-    "file": PathName,
-    "total": totalUnique,
-    "unique": uniqueHref
-  }
-  return objTotalUnique
-}
-
-const totalBroken = (objUnique, stat) => {
-  let arrayStatus = []
-  linksStatus(stat)
-  .then(data => {
-    for (let value = 0; value < data.length; value+=1) {
-      const element = data[value].status;
-      arrayStatus.push(element)
-    }
-    const statusBroken = (arrayStatus.filter(data => data >= 404)).length
-    const brokenLinks = statusBroken
-    const objTotalBroken = {
-      ...objUnique,
-      "broken": brokenLinks
-    }
-    return console.log(`Broken: ${objTotalBroken.broken}`)
-  })
-  .catch(err => console.error(err))
-}
-
-const totalBrokenDirectory = (objUnique, stat) => {
-  let arrayStatus = []
-  let objTotalBroken = {}
-  let arrayBrok = []
-    linksStatus(stat)
-    .then(data => {
-      for (let value = 0; value < data.length; value+=1) {
-        const element = data[value].status;
-        arrayStatus.push(element)
-      }
-      const statusBroken = (arrayStatus.filter(data => data >= 404)).length
-      const brokenLinks = statusBroken
-      objTotalBroken = {
-        ...objUnique,
-        "broken": brokenLinks
-      }
-      arrayBrok.push(objTotalBroken)
-      return(console.table(arrayBrok))
-    })
-    .catch(err => console.error(err))
+   return validateLinkStatus;
 }
 
 //Funcion principal mdlinks
@@ -203,39 +147,23 @@ const mdlinks = (test, options={} ) => {
   let arrayfileDirectory = [];
   return new Promise((resolve, reject) => {
     let value = options.validate
-    let valueStats = options.stats
-    let valuestatsValidate = options.statsValidate
     if (!existsRoute(test)) {
       reject("Ruta inválida")
     }
     if (isFile(test)) {
-      resolve(validateIsFileMd(test, value))
-      if(valueStats === false) {
-        const objResultStats = totalUnique(validateIsFileMd(test, valueStats))
-        resolve(console.log(`Total: ${objResultStats.total} \nUnique: ${objResultStats.unique}`))
-      } else if (valuestatsValidate === false) {
-        const objResultStats = totalUnique(validateIsFileMd(test, valuestatsValidate))
-        const statsVal = totalBroken(objResultStats, validateIsFileMd(test, valuestatsValidate))
-        resolve(statsVal)
-      }
+      resolve(Promise.all(validateIsFileMd(test, value)))
     } else {
       if (searchRoutemd(test).length === 0) {
         reject('El directorio no contiene archivos');
       } else {
           const allRoute = searchRoutemd(test).map(data => {
           if (value === true) {
-            return validateIsFileMd(data, value)
-          } else if (valueStats === false) {
-             return totalUnique(validateIsFileMd(data, valueStats))
-          } else if (valuestatsValidate === false) {
-            const objUnique = totalUnique(validateIsFileMd(data, valuestatsValidate))
-            const objBroken = totalBrokenDirectory(objUnique, validateIsFileMd(data, valuestatsValidate))
-            return objBroken
+            return Promise.all(validateIsFileMd(data, value))
           }
-            arrayfileDirectory = validateIsFileMd(data, value)
-            return arrayfileDirectory
+
+            return validateIsFileMd(data, value)
         })
-        resolve (allRoute)
+        resolve (Promise.all(allRoute))
       }
     }
   });
@@ -253,7 +181,5 @@ module.exports = {
   validateIsFileMd,
   linkValidate,
   linksStatus,
-  totalUnique,
-  totalBroken,
   mdlinks
 }
