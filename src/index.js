@@ -93,7 +93,6 @@ const extraerLinks = (arrayMdFiles, pathName) => {
         };
         arrayLinks.push(linkProperties);
       };
-      console.log(readFilePath(file))
       marked(readFilePath(file), { renderer });
     });
     return arrayLinks;
@@ -250,5 +249,11 @@ module.exports = {
   isAbsoluteTest,
   ArrayFileNameDirectories,
   searchRoutemd,
+  namePath,
+  validateIsFileMd,
+  linkValidate,
+  linksStatus,
+  totalUnique,
+  totalBroken,
   mdlinks
 }
