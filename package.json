@@ -1,7 +1,7 @@
 {
-  "name": "package.json",
+  "name": "lim014-mdlinks",
   "version": "1.0.0",
-  "description": "Libreria para leer los links de archivos Markdown",
+  "description": "Libreria para validar links de archivos Markdown",
   "main": "src/cli.js",
   "bin": {
     "md-links": "src/cli.js"
@@ -10,7 +10,6 @@
     "test": "test"
   },
   "scripts": {
-    "prueba": "node src/index.js",
     "cli": "node src/cli.js",
     "start": "serve src/",
     "test": "jest",

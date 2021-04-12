@@ -1,4 +1,12 @@
 const jest = require('jest')
-const mockTest = jest.fn();
+// const linkValidate = require('../src/index')
 
-module.exports = mockTest;
+ const linkValidate = jest.fn().mockReturnValue(20);
+
+const index = jest.mock('../src/index', () => {
+    return {
+        linkValidate
+    };
+});
+
+export default index;

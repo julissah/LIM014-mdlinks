@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
-jest.mock('node-fetch');
-const fetch = require('node-fetch');
-const linkValidate = require('../src/index');
 
+const fetch = require('node-fetch');
+const { linksStatus } = require('../src/index');
+jest.mock('node-fetch');
 describe('Comprobar validación de links', () => {
   test('Validar el status = 200', () => {
     const arrayLinks = [
@@ -20,7 +20,17 @@ describe('Comprobar validación de links', () => {
         "status": 200,
         "statusText": "Ok"
       }
-    ]
+    ];
 
+    fetch.mockImplementation(() => Promise.resolve({
+      "status": 200,
+      "statusText": "Ok"
+    }));
+
+    return Promise.all(linksStatus(arrayLinks)).then((res) => {
+      expect(res).toEqual(result)
   });
+
+});
+
 });

@@ -11,8 +11,6 @@ const {
   namePath,
   validateIsFileMd,
   linkValidate,
-  totalUnique,
-  totalBroken,
   linksStatus
  } = require('../src/index');
 
@@ -134,109 +132,9 @@ test('Obtener href, pathName, text del file ingresado - __validate false', () =>
 });
 });
 
-describe('Función sincrona: Validar la petición http y obtener el status', () => {
-  test('Validar si es una función', () => {
-    expect(typeof linksStatus).toBe('function');
-  });
-  test('Validar el status de los links', done => {
-    const arrayLinks = [
-      {
-        "href": 'https://github.com/',
-        "text": 'github',
-        "pathName": 'test\\fileTest\\test1.md'
-      }
-    ]
-    const result = [
-      {
-        "href": "https://github.com/",
-        "pathName": "test\\fileTest\\test1.md",
-        "text": "github",
-        "status": 200,
-        "statusText": "Ok"
-      }
-    ]
-    linksStatus(arrayLinks).then(data => {
-      expect(data).toEqual(result);
-      done();
-    });
-  });
-
-  test('Validar el status = 404 de los links', done => {
-    const arrayLinks = [
-      {
-        "href": 'https://github.com1/',
-        "text": 'github',
-        "pathName": 'test\\fileTest\\test1.md'
-      }
-    ]
-    const result = [
-      {
-        "href": "https://github.com1/",
-        "pathName": "test\\fileTest\\test1.md",
-        "text": "github",
-        "status": 404,
-        "statusText": "fail"
-      }
-    ]
-    linksStatus(arrayLinks).then(data => {
-      expect(data).toEqual(result);
-      done();
-    });
-  });
-});
-
 describe('Comprobar si obtiene la validación de links', () => {
   test('Validar si es una función', () => {
   expect(typeof linkValidate).toBe('function');
 });
 
 });
-
-describe('CLI: Comprobar si muestra el total y unique de links', () => {
-  test('Validar si es una función', () => {
-  expect(typeof totalUnique).toBe('function');
-});
-
-test('Validar si muestra el total de links y links unicos', () => {
-  const arrayLinks = [
-    {
-      "href": "https://github.com/",
-      "pathName": "C:\\Users\\N14\\Documents\\GitHub\\LIM014-mdlinks\\test\\fileTest\\test1.md",
-      "text": "github"
-    }
-  ]
-  const result = {
-    "file": "test1.md",
-    "total": 1,
-    "unique": 1
-  }
-  expect(totalUnique(arrayLinks)).toEqual(result);
-});
-});
-
-describe('CLI: Comprobar si muestra el total, unique de links y broken', () => {
-  test('Validar si es una función', () => {
-    expect(typeof totalBroken).toBe('function');
-  });
-
-  test('Validar si muestra el total de links, links unicos y links rotos', () => {
-    const objUnique = {
-      "file": 'test2.md',
-      "total": 1,
-      "unique": 1
-    }
-    const stat = [
-      {
-        "href": 'https://jestjs.io/docs/getting-started1',
-        "text": 'jest',
-        "pathName": 'test\\fileTest\\fileTest1\\test2.md'
-      }
-    ]
-    const result = {
-      "file": "test1.md",
-      "total": 1,
-      "unique": 1
-    }
-    expect(totalBroken(objUnique, stat), toEqual('hi'))
-  })
-})

@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable max-statements */
 const path = require('path');
 const fs = require('fs');
 const marked = require('marked');
@@ -56,6 +54,7 @@ const namePath = (test) => {
   return pathName
 }
 //Función de validacion de archivos (extension .md)
+// eslint-disable-next-line max-statements
 const validateIsFileMd = (test, value) => {
   let pathName = namePath(test)
   let arrayMdFiles = [];
@@ -80,6 +79,7 @@ const validateIsFileMd = (test, value) => {
   }
   return arrayLinksMd
 }
+
 // Funcion de extraer links
 const extraerLinks = (arrayMdFiles, pathName) => {
     let arrayLinks = [];
@@ -98,6 +98,7 @@ const extraerLinks = (arrayMdFiles, pathName) => {
     return arrayLinks;
 };
 
+// Función Validación de links
 const linkValidate = (arrayLinks) => {
   let arrayLinkProperties = [];
   arrayLinks.map(item => {
@@ -108,6 +109,7 @@ const linkValidate = (arrayLinks) => {
   )
 }
 
+// Función Validación de status de links
 const linksStatus = (arrayLinks) => {
   const validateLinkStatus = arrayLinks.map((element) =>
     fetch(element)
@@ -144,30 +146,33 @@ const linksStatus = (arrayLinks) => {
 
 //Funcion principal mdlinks
 const mdlinks = (test, options={} ) => {
-  let arrayfileDirectory = [];
   return new Promise((resolve, reject) => {
     let value = options.validate
     if (!existsRoute(test)) {
       reject("Ruta inválida")
     }
     if (isFile(test)) {
-      resolve(Promise.all(validateIsFileMd(test, value)))
+      Promise.all(validateIsFileMd(test, value))
+      .then(resp => resolve(resp))
     } else {
       if (searchRoutemd(test).length === 0) {
         reject('El directorio no contiene archivos');
       } else {
           const allRoute = searchRoutemd(test).map(data => {
           if (value === true) {
-            return Promise.all(validateIsFileMd(data, value))
+            return validateIsFileMd(data, value)
+            // .then(resp => resolve(resp))
           }
-
             return validateIsFileMd(data, value)
         })
-        resolve (Promise.all(allRoute))
+        const prueba = allRoute.flat()
+        Promise.all(prueba)
+        .then(resp => resolve(resp))
       }
     }
   });
 }
+
 module.exports = {
   existsRoute,
   isFile,
