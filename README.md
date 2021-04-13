@@ -67,7 +67,7 @@ En la línea de interfaz de comando (CLI), podemos ingresar los siguientes coman
 * ![](./img/stats.svg)
 * ![](./img/validateStats.svg)
 
-Si solo se coloca la ruta sin opciones, retornará el file, href y text de cada uno de los links encontrados.
+Si solo se ingresa la ruta sin opciones, retornará el file, href y text de cada uno de los links encontrados.
 
 ![](./img/routeR.svg)
 
@@ -83,5 +83,9 @@ Si se ingresa la opción `--stats`, el resultado serán el total de links encont
 Tambien puede ingresar ambas opciones (`--stats --validate`), mostrará la cantidad total de links, links sin repetir y links rotos.
 
 ![](./img/validateStatsR.svg)
+
+Tambien puede ingresar la opción (`--help`), para saber mas de las opciones.
+
+![](./img/help.svg)
 
 
