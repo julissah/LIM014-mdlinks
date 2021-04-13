@@ -20,7 +20,7 @@ La librería `md-links` -creada con [Node.js](https://nodejs.org/)- se encarga d
 [Markdown](https://es.wikipedia.org/wiki/Markdown)  para verificar los links que contengan y reportar algunas estadísticas, ya que muchos de estos links pueden encontrarse rotos o ya no son válidos y perjudican el valor de la información que se desea compartir.
 
 ## 2. Diagrama de flujo
-Para poder implementar esta librería, se realizaron 2 diagramas de flujo para modulo.
+Para poder implementar esta librería, se realizaron 2 diagramas de flujo para cada módulo.
 
 ### 1) API
 
@@ -44,7 +44,7 @@ Por repo de github:
 
 ### API
 
-Para acceder a `mdLinks`, debemos importarla con
+Para acceder a `mdLinks`, debemos importarla con:
 
 `const mdLinks = require('lim014-mdlinks')`
 
@@ -62,10 +62,10 @@ En la línea de interfaz de comando (CLI), podemos ingresar los siguientes coman
 
 `md-links <path-to-file> [options]`
 
-![](./img/route.svg)
-![](./img/validate.svg)
-![](./img/stats.svg)
-![](./img/validateStats.svg)
+* ![](./img/route.svg)
+* ![](./img/validate.svg)
+* ![](./img/stats.svg)
+* ![](./img/validateStats.svg)
 
 Si solo se coloca la ruta sin opciones, retornará el file, href y text de cada uno de los links encontrados.
 
