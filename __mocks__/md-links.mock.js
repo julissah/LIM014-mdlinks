@@ -1,5 +1,4 @@
 const jest = require('jest')
-// const linkValidate = require('../src/index')
 
  const linkValidate = jest.fn().mockReturnValue(20);
 

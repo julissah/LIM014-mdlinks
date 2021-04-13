@@ -11,7 +11,6 @@ const {
   namePath,
   validateIsFileMd,
   linkValidate,
-  linksStatus
  } = require('../src/index');
 
 describe('Comprobar si la ruta existe', () => {
@@ -120,7 +119,7 @@ describe('Comprobar si el file .md muestra los resultados con la opcion validate
   expect(typeof validateIsFileMd).toBe('function');
 });
 
-test('Obtener href, pathName, text del file ingresado - __validate false', () => {
+  test('Obtener href, pathName, text del file ingresado - __validate false', () => {
   const result = [
     {
       "href": "https://github.com/",
@@ -129,12 +128,12 @@ test('Obtener href, pathName, text del file ingresado - __validate false', () =>
     }
   ]
   expect(validateIsFileMd(`${__dirname}/fileTest/test1.md`, false)).toEqual(result);
-});
+  });
 });
 
 describe('Comprobar si obtiene la validación de links', () => {
   test('Validar si es una función', () => {
   expect(typeof linkValidate).toBe('function');
-});
+  });
 
 });
