@@ -16,22 +16,82 @@
 
 ## 1. Preámbulo
 
-[Markdown](https://es.wikipedia.org/wiki/Markdown) es un lenguaje de marcado
-ligero muy popular entre developers. Es usado en muchísimas plataformas que
-manejan texto plano (GitHub, foros, blogs, ...), y es muy común
-encontrar varios archivos en ese formato en cualquier tipo de repositorio
-(empezando por el tradicional `README.md`).
+# Markdown Links
 
-Estos archivos `Markdown` normalmente contienen _links_ (vínculos/ligas) que
-muchas veces están rotos o ya no son válidos y eso perjudica mucho el valor de
-la información que se quiere compartir.
+La librería `md-links` -creada con [Node.js](https://nodejs.org/)- se encarga de leer y analizar los archivos en formato
+[Markdown](https://es.wikipedia.org/wiki/Markdown)  para verificar los links que contengan y reportar algunas estadísticas, ya que muchos de estos links pueden encontrarse rotos o ya no son válidos y perjudican el valor de la información que se desea compartir.
 
-Dentro de una comunidad de código abierto, nos han propuesto crear una
-herramienta usando [Node.js](https://nodejs.org/), que lea y analice archivos
-en formato `Markdown`, para verificar los links que contengan y reportar
-algunas estadísticas.
+## INSTALACIÓN
 
-![md-links](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
+Por npm:
+
+`$ npm i lim014-mdlinks`
+
+Por repo de github:
+
+`$ npm i --global julissah/LIM014-mdlinks`
+
+## GUÍA DE USO
+
+### API
+
+Para acceder a `mdLinks`, debemos importarla con
+
+`const mdLinks = require('lim014-mdlinks')`
+
+mdLinks recibe
+mdLinks recibe dos parámetros: `path` (ruta absoluta o relativa) y `option`, retornando un array de objetos por cada link encontrado con sus propiedades (href, text y file).
+
+
+**Ejemplo:**
+
+![](./img/resultados.svg)
+
+
+### CLI
+En la línea de interfaz de comando (CLI), podemos ingresar los siguientes comando:
+
+`md-links <path-to-file> [options]`
+
+![](./img/route.svg)
+![](./img/validate.svg)
+![](./img/stats.svg)
+![](./img/validateStats.svg)
+
+Si solo se coloca la ruta sin opciones, retornará el file, href y text de cada uno de los links encontrados.
+
+![](./img/routeR.svg)
+
+
+Si se ingresa la opción `--validate`, retornará el file, href y el texto de los links encontrados, además del status (200, 404, 500) y su mensaje respectivo (ok o fail).
+
+![](./img/validateR.svg)
+
+Si se ingresa la opción `--stats`, el resultado serán el total de links encontrados y los links únicos (sin repetir).
+
+![](./img/statsR.svg)
+
+Tambien puede ingresar ambas opciones (`--stats --validate`), mostrará la cantidad total de links, links sin repetir y links rotos.
+
+![](./img/validateStatsR.svg)
+
+En caso se coloque alguna otra opción no válida, la consola arrojará lo siguiente:
+
+![](./img/wrong-flag.png)
+
+
+
+## DIAGRAMAS DE FLUJO
+Para poder implementar esta librería, se realizaron 2 diagramas de flujo para modulo.
+
+### 1) API
+
+![](./img/DF-API.png)
+
+### 2) CLI (Command Line Interface - Interfaz de Línea de Comando)
+
+![](./img/DF-CLI.png)
+
 
 ## 2. Resumen del proyecto
 

@@ -32,6 +32,7 @@
   "homepage": "https://github.com/julissah/LIM014-mdlinks#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "chalk": "^4.1.0",
     "moment": "^2.29.1",
     "node-fetch": "^2.6.1"
   },
