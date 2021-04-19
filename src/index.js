@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const marked = require('marked');
 const fetch = require('node-fetch');
+const { resolve } = require('path');
 
 //Función que verifica si existe la ruta
 const existsRoute = (test) => (fs.existsSync(test));
@@ -144,6 +145,14 @@ const linksStatus = (arrayLinks) => {
    return validateLinkStatus;
 }
 
+const detail = (test, options={}) => {
+  return new Promise((resolve, reject) => {
+    let value = options.validate
+    const allRoute = searchRoutemd(test).map(data => Promise.all(validateIsFileMd(data, value)))
+    Promise.all(allRoute).then(resp => resolve(resp))
+  })
+}
+
 //Funcion principal mdlinks
 const mdlinks = (test, options={} ) => {
   return new Promise((resolve, reject) => {
@@ -158,16 +167,10 @@ const mdlinks = (test, options={} ) => {
       if (searchRoutemd(test).length === 0) {
         reject('El directorio no contiene archivos');
       } else {
-          const allRoute = searchRoutemd(test).map(data => {
-          if (value === true) {
-            return validateIsFileMd(data, value)
-            // .then(resp => resolve(resp))
-          }
-            return validateIsFileMd(data, value)
-        })
-        const prueba = allRoute.flat()
-        Promise.all(prueba)
-        .then(resp => resolve(resp))
+          const allRoute = searchRoutemd(test).map(data => validateIsFileMd(data, value))
+          const allRouteFlat = allRoute.flat()
+          Promise.all(allRouteFlat)
+            .then(resp => resolve(resp))
       }
     }
   });
@@ -186,5 +189,6 @@ module.exports = {
   validateIsFileMd,
   linkValidate,
   linksStatus,
-  mdlinks
+  mdlinks,
+  detail
 }

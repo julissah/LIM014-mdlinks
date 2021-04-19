@@ -1,11 +1,4 @@
-const jest = require('jest')
+/* eslint-disable no-undef */
+const get = jest.fn()
 
- const linkValidate = jest.fn().mockReturnValue(20);
-
-const index = jest.mock('../src/index', () => {
-    return {
-        linkValidate
-    };
-});
-
-export default index;
+module.exports = { get }

@@ -9,7 +9,7 @@
   "directories": {
     "test": "test"
   },
-  "scripts": {
+    "scripts": {
     "cli": "node src/cli.js",
     "start": "serve src/",
     "test": "jest",

@@ -84,7 +84,7 @@ Tambien puede ingresar ambas opciones (`--stats --validate`), mostrará la canti
 
 ![](./img/validateStatsR.svg)
 
-Tambien puede ingresar la opción (`--help`), para saber mas de las opciones.
+Tambien puede ingresar la opción (`--help`), si desea mas información de las opciones que tiene la libreria.
 
 ![](./img/help.svg)
 
