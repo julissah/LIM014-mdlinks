@@ -92,7 +92,7 @@ Tambien puede agregar el comando  (`--detail`), para obtener un reporte de canti
 
 Tambien puede ingresar la opción (`--help`), si desea mas información de las opciones que tiene la libreria.
 
-![](./img/help.png)
+![](./img/help.svg)
 
 
 
