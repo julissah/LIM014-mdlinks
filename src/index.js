@@ -2,7 +2,6 @@ const path = require('path');
 const fs = require('fs');
 const marked = require('marked');
 const fetch = require('node-fetch');
-const { resolve } = require('path');
 
 //Función que verifica si existe la ruta
 const existsRoute = (test) => (fs.existsSync(test));
@@ -86,7 +85,7 @@ const extraerLinks = (arrayMdFiles, pathName) => {
     let arrayLinks = [];
     const renderer = new marked.Renderer();
     arrayMdFiles.forEach( file => {
-      renderer.link = (href, title, text) => { // renderer define salida ouput con tres propiedades
+      renderer.link = (href, title, text) => { // renderer define salida  con tres propiedades
         const linkProperties = {
           href,
           text,
